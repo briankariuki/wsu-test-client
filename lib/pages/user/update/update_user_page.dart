@@ -25,31 +25,31 @@ class UpdateUserPage extends StatefulWidget {
 
 class _UpdateUserPageState extends State<UpdateUserPage> {
   final emailFocusNode = FocusNode();
-  final nameFocusNode = FocusNode();
-  final phoneNumberFocusNode = FocusNode();
+  final firstNameFocusNode = FocusNode();
+  final lastNameFocusNode = FocusNode();
 
   final emailTextController = TextEditingController();
-  final nameTextController = TextEditingController();
-  final phoneNumberTextController = TextEditingController();
+  final firstNameTextController = TextEditingController();
+  final lastNameTextController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
     emailTextController.text = widget.user.email!;
-    nameTextController.text = widget.user.displayName!;
-    phoneNumberTextController.text = widget.user.phoneNumber!;
+    firstNameTextController.text = widget.user.firstName!;
+    lastNameTextController.text = widget.user.lastName!;
   }
 
   @override
   void dispose() {
-    nameFocusNode.dispose();
+    firstNameFocusNode.dispose();
     emailFocusNode.dispose();
-    phoneNumberFocusNode.dispose();
+    lastNameFocusNode.dispose();
 
-    phoneNumberTextController.dispose();
+    lastNameTextController.dispose();
     emailTextController.dispose();
-    nameTextController.dispose();
+    firstNameTextController.dispose();
     super.dispose();
   }
 
@@ -131,24 +131,50 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
               height: 40.0,
             ),
             StreamBuilder<String?>(
-              stream: updateUserController.nameError$,
+              stream: updateUserController.firstNameError$,
               builder: (context, snapshot) {
                 return TextField(
-                  controller: nameTextController,
-                  onChanged: updateUserController.nameChanged,
+                  controller: firstNameTextController,
+                  onChanged: updateUserController.firstNameChanged,
                   autocorrect: true,
                   decoration: InputDecoration(
                     prefixIcon: const Padding(
                       padding: EdgeInsetsDirectional.only(end: 8.0),
                       child: Icon(Icons.person),
                     ),
-                    labelText: 'Name',
+                    labelText: 'First Name',
                     errorText: snapshot.data,
                   ),
                   keyboardType: TextInputType.name,
                   maxLines: 1,
                   style: const TextStyle(fontSize: 16.0),
-                  focusNode: nameFocusNode,
+                  focusNode: firstNameFocusNode,
+                  onSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(lastNameFocusNode);
+                  },
+                  textInputAction: TextInputAction.next,
+                );
+              },
+            ),
+            StreamBuilder<String?>(
+              stream: updateUserController.lastNameError$,
+              builder: (context, snapshot) {
+                return TextField(
+                  controller: lastNameTextController,
+                  onChanged: updateUserController.lastNameChanged,
+                  autocorrect: true,
+                  decoration: InputDecoration(
+                    prefixIcon: const Padding(
+                      padding: EdgeInsetsDirectional.only(end: 8.0),
+                      child: Icon(Icons.person),
+                    ),
+                    labelText: 'Last Name',
+                    errorText: snapshot.data,
+                  ),
+                  keyboardType: TextInputType.name,
+                  maxLines: 1,
+                  style: const TextStyle(fontSize: 16.0),
+                  focusNode: lastNameFocusNode,
                   onSubmitted: (_) {
                     FocusScope.of(context).requestFocus(emailFocusNode);
                   },
@@ -175,32 +201,6 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                   maxLines: 1,
                   style: const TextStyle(fontSize: 16.0),
                   focusNode: emailFocusNode,
-                  onSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(phoneNumberFocusNode);
-                  },
-                  textInputAction: TextInputAction.next,
-                );
-              },
-            ),
-            StreamBuilder<String?>(
-              stream: updateUserController.phoneNumberError$,
-              builder: (context, snapshot) {
-                return TextField(
-                  controller: phoneNumberTextController,
-                  onChanged: updateUserController.phoneNumberChanged,
-                  autocorrect: true,
-                  decoration: InputDecoration(
-                    prefixIcon: const Padding(
-                      padding: EdgeInsetsDirectional.only(end: 8.0),
-                      child: Icon(Icons.phone),
-                    ),
-                    labelText: 'Phone Number',
-                    errorText: snapshot.data,
-                  ),
-                  keyboardType: TextInputType.phone,
-                  maxLines: 1,
-                  style: const TextStyle(fontSize: 16.0),
-                  focusNode: phoneNumberFocusNode,
                   onSubmitted: (_) {
                     FocusScope.of(context).unfocus();
                   },

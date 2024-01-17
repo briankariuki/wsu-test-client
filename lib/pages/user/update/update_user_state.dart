@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 @immutable
 class UpdateUser {
   final String email;
-  final String displayName;
-  final String phoneNumber;
+  final String firstName;
+  final String lastName;
 
-  const UpdateUser(this.email, this.displayName, this.phoneNumber);
+  const UpdateUser(this.email, this.firstName, this.lastName);
 }
 
 @immutable

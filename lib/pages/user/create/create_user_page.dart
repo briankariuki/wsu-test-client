@@ -16,8 +16,8 @@ class CreateUserPage extends StatefulWidget {
 
 class _CreateUserPageState extends State<CreateUserPage> {
   final emailFocusNode = FocusNode();
-  final nameFocusNode = FocusNode();
-  final phoneNumberFocusNode = FocusNode();
+  final firstNameFocusNode = FocusNode();
+  final lastNameFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -26,9 +26,9 @@ class _CreateUserPageState extends State<CreateUserPage> {
 
   @override
   void dispose() {
-    nameFocusNode.dispose();
+    firstNameFocusNode.dispose();
     emailFocusNode.dispose();
-    phoneNumberFocusNode.dispose();
+    lastNameFocusNode.dispose();
     super.dispose();
   }
 
@@ -110,25 +110,50 @@ class _CreateUserPageState extends State<CreateUserPage> {
               height: 40.0,
             ),
             StreamBuilder<String?>(
-              stream: createUserController.nameError$,
+              stream: createUserController.firstNameError$,
               builder: (context, snapshot) {
                 return TextField(
-                  onChanged: createUserController.nameChanged,
+                  onChanged: createUserController.firstNameChanged,
                   autocorrect: true,
                   decoration: InputDecoration(
                     prefixIcon: const Padding(
                       padding: EdgeInsetsDirectional.only(end: 8.0),
                       child: Icon(Icons.person),
                     ),
-                    labelText: 'Name',
+                    labelText: 'First Name',
                     errorText: snapshot.data,
                   ),
                   keyboardType: TextInputType.name,
                   maxLines: 1,
                   style: const TextStyle(fontSize: 16.0),
-                  focusNode: nameFocusNode,
+                  focusNode: firstNameFocusNode,
                   onSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(emailFocusNode);
+                    FocusScope.of(context).requestFocus(lastNameFocusNode);
+                  },
+                  textInputAction: TextInputAction.next,
+                );
+              },
+            ),
+            StreamBuilder<String?>(
+              stream: createUserController.lastNameError$,
+              builder: (context, snapshot) {
+                return TextField(
+                  onChanged: createUserController.lastNameChanged,
+                  autocorrect: true,
+                  decoration: InputDecoration(
+                    prefixIcon: const Padding(
+                      padding: EdgeInsetsDirectional.only(end: 8.0),
+                      child: Icon(Icons.person),
+                    ),
+                    labelText: 'Last Name',
+                    errorText: snapshot.data,
+                  ),
+                  keyboardType: TextInputType.name,
+                  maxLines: 1,
+                  style: const TextStyle(fontSize: 16.0),
+                  focusNode: lastNameFocusNode,
+                  onSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(lastNameFocusNode);
                   },
                   textInputAction: TextInputAction.next,
                 );
@@ -152,31 +177,6 @@ class _CreateUserPageState extends State<CreateUserPage> {
                   maxLines: 1,
                   style: const TextStyle(fontSize: 16.0),
                   focusNode: emailFocusNode,
-                  onSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(phoneNumberFocusNode);
-                  },
-                  textInputAction: TextInputAction.next,
-                );
-              },
-            ),
-            StreamBuilder<String?>(
-              stream: createUserController.phoneNumberError$,
-              builder: (context, snapshot) {
-                return TextField(
-                  onChanged: createUserController.phoneNumberChanged,
-                  autocorrect: true,
-                  decoration: InputDecoration(
-                    prefixIcon: const Padding(
-                      padding: EdgeInsetsDirectional.only(end: 8.0),
-                      child: Icon(Icons.phone),
-                    ),
-                    labelText: 'Phone Number',
-                    errorText: snapshot.data,
-                  ),
-                  keyboardType: TextInputType.phone,
-                  maxLines: 1,
-                  style: const TextStyle(fontSize: 16.0),
-                  focusNode: phoneNumberFocusNode,
                   onSubmitted: (_) {
                     FocusScope.of(context).unfocus();
                   },

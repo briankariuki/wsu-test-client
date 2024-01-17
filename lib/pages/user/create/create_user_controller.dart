@@ -18,12 +18,12 @@ class CreateUserController {
   final BehaviorSubject<User> user$;
 
   final Function(String) emailChanged;
-  final Function(String) nameChanged;
-  final Function(String) phoneNumberChanged;
+  final Function(String) firstNameChanged;
+  final Function(String) lastNameChanged;
 
   final Stream<String?> emailError$;
-  final Stream<String?> nameError$;
-  final Stream<String?> phoneNumberError$;
+  final Stream<String?> firstNameError$;
+  final Stream<String?> lastNameError$;
 
   final Stream<CreateUserMessage> message$;
 
@@ -32,11 +32,11 @@ class CreateUserController {
     required this.createUser,
     required this.user$,
     required this.emailChanged,
-    required this.phoneNumberChanged,
-    required this.nameChanged,
+    required this.lastNameChanged,
+    required this.firstNameChanged,
     required this.emailError$,
-    required this.nameError$,
-    required this.phoneNumberError$,
+    required this.firstNameError$,
+    required this.lastNameError$,
     required this.message$,
   });
 
@@ -52,22 +52,22 @@ class CreateUserController {
     final createUserController = PublishSubject<void>();
     final userController = BehaviorSubject<User>();
     final emailController = PublishSubject<String>();
-    final nameController = PublishSubject<String>();
-    final phoneNumberController = PublishSubject<String>();
+    final firstNameController = PublishSubject<String>();
+    final lastNameController = PublishSubject<String>();
 
     final isValidSubmit$ = Rx.combineLatest4(
       emailController.stream.map(Validator.isValidEmail),
-      phoneNumberController.stream.map(Validator.isValidPhonenumber),
+      lastNameController.stream.map(Validator.isValidPhonenumber),
       isFetchingController.stream,
-      nameController.stream.map(Validator.isValidUserName),
+      firstNameController.stream.map(Validator.isValidUserName),
       (bool isValidEmail, bool isValidPhonenumber, bool isLoading, bool isValidName) => isValidEmail && isValidPhonenumber && !isLoading && isValidName,
     ).shareValueSeeded(false);
 
     final createUser$ = Rx.combineLatest3(
       emailController.stream,
-      nameController.stream,
-      phoneNumberController.stream,
-      (String email, String name, String phoneNumber) => CreateUser(email, name, phoneNumber),
+      firstNameController.stream,
+      lastNameController.stream,
+      (String email, String name, String lastName) => CreateUser(email, name, lastName),
     );
 
     final submit$ = createUserController.stream.withLatestFrom(isValidSubmit$, (_, bool isValid) => isValid).share();
@@ -83,8 +83,8 @@ class CreateUserController {
             (user) => userApi
                 .create({
                   "email": user.email,
-                  "phoneNumber": user.phoneNumber,
-                  "displayName": user.displayName,
+                  "lastName": user.lastName,
+                  "firstName": user.firstName,
                 })
                 .asStream()
                 .toEitherStream(Mappers.errorToAppError)
@@ -114,15 +114,15 @@ class CreateUserController {
         .distinct()
         .share();
 
-    final phoneNumberError$ = phoneNumberController.stream
-        .map((phoneNumber) {
-          if (Validator.isValidPhonenumber(phoneNumber)) return null;
-          return 'Phonenumber must be at least 6 characters';
+    final lastNameError$ = lastNameController.stream
+        .map((lastName) {
+          if (Validator.isValidUserName(lastName)) return null;
+          return 'Phonenumber must be at least 3 characters';
         })
         .distinct()
         .share();
 
-    final nameError$ = nameController.stream
+    final firstNameError$ = firstNameController.stream
         .map((name) {
           if (Validator.isValidUserName(name)) return null;
           return 'Name must be at least 3 characters';
@@ -133,13 +133,13 @@ class CreateUserController {
     return CreateUserController._(
       isFetching$: isFetchingController,
       createUser: () => createUserController.add(null),
-      nameChanged: (value) => nameController.add(value.trim()),
+      firstNameChanged: (value) => firstNameController.add(value.trim()),
       emailChanged: (value) => emailController.add(value.trim()),
-      phoneNumberChanged: (value) => phoneNumberController.add(value.trim()),
+      lastNameChanged: (value) => lastNameController.add(value.trim()),
       user$: userController,
       emailError$: emailError$,
-      nameError$: nameError$,
-      phoneNumberError$: phoneNumberError$,
+      firstNameError$: firstNameError$,
+      lastNameError$: lastNameError$,
       message$: message$,
     );
   }
@@ -150,8 +150,8 @@ class CreateUserController {
     user$.close();
 
     emailError$.drain();
-    nameError$.drain();
-    phoneNumberError$.drain();
+    firstNameError$.drain();
+    lastNameError$.drain();
 
     message$.drain();
 

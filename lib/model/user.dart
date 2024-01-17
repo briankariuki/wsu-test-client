@@ -7,16 +7,12 @@ part 'user.g.dart';
 
 @JsonSerializable()
 class User extends BaseObject {
-  late String? uid;
-  late String? displayName;
-  late String? username;
+  late String? firstName;
+  late String? lastName;
   late String? email;
-  late String? phoneNumber;
   late UserStatus? status;
-  late bool? verified;
 
-  String get firstName => displayName!.split(' ').first;
-  String get avatar => displayName!.split('').first;
+  String get avatar => firstName!.split('').first;
 
   static User fromJson(dynamic json) => _$UserFromJson(json);
 

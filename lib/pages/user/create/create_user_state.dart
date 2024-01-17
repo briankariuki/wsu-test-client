@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 @immutable
 class CreateUser {
   final String email;
-  final String displayName;
-  final String phoneNumber;
+  final String firstName;
+  final String lastName;
 
-  const CreateUser(this.email, this.displayName, this.phoneNumber);
+  const CreateUser(this.email, this.firstName, this.lastName);
 }
 
 @immutable

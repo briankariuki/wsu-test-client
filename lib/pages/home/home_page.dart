@@ -283,22 +283,10 @@ class UserTile extends StatelessWidget {
         radius: 24.0,
         child: Text(user.avatar),
       ),
-      title: Text(user.displayName!),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            user.email!,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
-          ),
-          const SizedBox(
-            height: 2.0,
-          ),
-          Text(
-            user.phoneNumber!,
-            style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.black45),
-          ),
-        ],
+      title: Text("${user.firstName!} ${user.lastName!}"),
+      subtitle: Text(
+        user.email!,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
       ),
       trailing: IconButton(
         onPressed: () => showModalBottomSheet(
